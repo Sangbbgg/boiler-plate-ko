@@ -13,6 +13,8 @@ app.use(cookieParser());
 
 const config = require("./config/key");
 
+const { auth } = require("./middleware/auth");
+
 const mongoose = require("mongoose");
 mongoose
   .connect(config.mongoURI)
@@ -21,7 +23,7 @@ mongoose
 
 app.get("/", (req, res) => res.send(`Hell'o World!`));
 
-app.post("/register", async (req, res) => {
+app.post("/api/users/register", async (req, res) => {
   try {
     const user = new User(req.body);
     const userInfo = await user.save();
@@ -33,7 +35,7 @@ app.post("/register", async (req, res) => {
   }
 });
 
-app.post("/login", async (req, res) => {
+app.post("/api/users/login", async (req, res) => {
   try {
     // Find the user with the provided email
     const user = await User.findOne({ email: req.body.email });
@@ -55,17 +57,41 @@ app.post("/login", async (req, res) => {
 
     // Generate a token and store it in cookies
     await user.generateToken();
-    
-    res
-      .cookie("x_auth", user.token)
-      .status(200)
-      .json({
-        loginSuccess: true,
-        userId: user._id,
-      });
+
+    res.cookie("x_auth", user.token).status(200).json({
+      loginSuccess: true,
+      userId: user._id,
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ loginSuccess: false, message: "Internal Server Error" });
+    res
+      .status(500)
+      .json({ loginSuccess: false, message: "Internal Server Error" });
+  }
+});
+
+app.get("/api/users/auth", auth, (req, res) => {
+  //여기까지 미들웨어를 통과해 왔다는 얘기는 Authentication이 true라는 말
+  res.status(200).json({
+    _id: req.user._id,
+    isAdmin: req.user.role === 0 ? false : true,
+    isAuth: true,
+    email: req.user.email,
+    name: req.user.name,
+    lastname: req.user.lastname,
+    role: req.user.role,
+    image: req.user.image,
+  });
+});
+
+app.get("/api/users/logout", auth, async (req, res) => {
+  try {
+    const user = await User.findOneAndUpdate({ _id: req.user._id }, { token: "" });
+    return res.status(200).send({
+      success: true,
+    });
+  } catch (err) {
+    return res.json({ success: false, err });
   }
 });
 

@@ -74,11 +74,26 @@ userSchema.methods.generateToken = async function () {
 
     // Save the user object with the token in the database
     await user.save();
-    
+
     return user;
   } catch (error) {
     throw error;
   }
+};
+
+userSchema.statics.findByToken = function (token, cb) {
+  const User = this;
+
+  jwt.verify(token, "yourSecretKey", async function (err, decoded) {
+    if (err) return cb(err);
+
+    try {
+      const user = await User.findOne({ _id: decoded, token: token });
+      cb(null, user);
+    } catch (error) {
+      cb(error);
+    }
+  });
 };
 
 const User = mongoose.model("User", userSchema);
