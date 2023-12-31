@@ -10,6 +10,10 @@ const userSchema = mongoose.Schema({
     trim: true,
     unipue: 1,
   },
+  password: {
+    type: String,
+    minlength: 5,
+  },
   lastname: {
     type: String,
     maxlength: 50,
@@ -28,4 +32,4 @@ const userSchema = mongoose.Schema({
 });
 
 const User = mongoose.model("User", userSchema);
-modeule.exprot = { User };
+module.exports = { User };
