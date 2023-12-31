@@ -23,6 +23,10 @@ mongoose
 
 app.get("/", (req, res) => res.send(`Hell'o World!`));
 
+app.get('/api/hello',(req,res)=>{
+  res.send("안녕???")
+})
+
 app.post("/api/users/register", async (req, res) => {
   try {
     const user = new User(req.body);
