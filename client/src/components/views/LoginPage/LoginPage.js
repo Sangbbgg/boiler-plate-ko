@@ -1,11 +1,10 @@
-// import { Axios } from "axios";
 import React, { useState } from "react";
-// import Axios from 'axios';
+
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../../../_actions/user_action";
 
-function LoginPage(props) {
+function LoginPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

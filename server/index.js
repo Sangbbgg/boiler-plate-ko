@@ -32,10 +32,10 @@ app.post("/api/users/register", async (req, res) => {
     const user = new User(req.body);
     const userInfo = await user.save();
     return res.status(200).json({
-      success: true,
+      registerSuccess: true,
     });
   } catch (err) {
-    return res.json({ success: false, err });
+    return res.json({ registerSuccess: false, err });
   }
 });
 
