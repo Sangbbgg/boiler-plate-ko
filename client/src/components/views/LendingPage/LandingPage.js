@@ -30,7 +30,7 @@ function LandingPage() {
         height: "100vh",
       }}
     >
-      <h2>시작 페이지</h2>
+      <h2>시작 페이지호호!</h2>
       <button onClick={onClickHeadler}>
         로그아웃
       </button>
